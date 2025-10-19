@@ -2,6 +2,7 @@
 using projet_wpf.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace projet_wpf.Views
 {
@@ -15,6 +16,8 @@ namespace projet_wpf.Views
             InitializeComponent();
             _viewModel = new SlideShowViewModel(photos);
             DataContext = _viewModel;
+
+            AttachFadeAnimation();
         }
 
         // Ferme la fenêtre si ECHAP (seule interaction possible)
@@ -26,5 +29,20 @@ namespace projet_wpf.Views
                 Close();
             }
         }
+
+        // Créer l'animation
+        private void AttachFadeAnimation()
+        {
+            _viewModel.PropertyChanged += (s, args) =>
+            {
+                if (args.PropertyName == nameof(_viewModel.CurrentImage))
+                {
+                    // Redémarre l'animation de fondu
+                    var fade = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1));
+                    DiapoImage.BeginAnimation(UIElement.OpacityProperty, fade);
+                }
+            };
+        }
+
     }
 }

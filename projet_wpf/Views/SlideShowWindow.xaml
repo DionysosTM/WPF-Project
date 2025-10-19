@@ -10,9 +10,11 @@
 
     <!-- Grid qui contient l'image du diapo -->
     <Grid>
-        <Image Source="{Binding CurrentImage}"
-               Stretch="Uniform"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"/>
+        <Image x:Name="DiapoImage"
+           Source="{Binding CurrentImage}"
+           Stretch="Uniform"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           Opacity="1"/>
     </Grid>
 </Window>
