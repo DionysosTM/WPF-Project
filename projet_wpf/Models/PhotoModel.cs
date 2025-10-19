@@ -14,8 +14,6 @@ namespace projet_wpf.Models
         public long FileSize { get; set; }
         public DateTime DateAdded { get; set; }
         public double CurrentAngle { get; private set; } = 0;
-
-        public BitmapImage Thumbnail { get; set; }
         
         // Image originale
         private BitmapImage _originalBitmap;
@@ -55,11 +53,6 @@ namespace projet_wpf.Models
             DateAdded = DateTime.Now;
             FileType = Path.GetExtension(filePath).ToLower();          
             FileSize = new FileInfo(filePath).Length;
-            Thumbnail = new BitmapImage();
-            Thumbnail.BeginInit();
-            Thumbnail.UriSource = new Uri(filePath);
-            Thumbnail.DecodePixelWidth = 150;
-            Thumbnail.EndInit();
 
             // Image originale
             _originalBitmap = new BitmapImage();
