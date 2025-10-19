@@ -1,0 +1,56 @@
+# Build results
+bin/
+obj/
+[Rr]elease/
+[Dd]ebug/
+x64/
+x86/
+build/
+*.dll
+*.exe
+*.pdb
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+*.snupkg
+
+# Dotnet Core / SDK
+project.assets.json
+*.dotCover
+*.dotSettings
+*.DotSettings.user
+
+# Resharper
+_ReSharper*/
+*.ReSharper.user
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Others
+*.log
+*.vsix
+*.cache
+*.bak
+*.tmp
