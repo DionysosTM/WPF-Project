@@ -1,0 +1,18 @@
+﻿<!-- Window avec des paramètres pour diapo (pas de souris, plein écran) -->
+<Window x:Class="projet_wpf.Views.SlideShowWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    WindowStyle="None"
+    WindowState="Maximized"
+    Background="Black"
+    Cursor="None"
+    KeyDown="Window_KeyDown">
+
+    <!-- Grid qui contient l'image du diapo -->
+    <Grid>
+        <Image Source="{Binding CurrentImage}"
+               Stretch="Uniform"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+    </Grid>
+</Window>

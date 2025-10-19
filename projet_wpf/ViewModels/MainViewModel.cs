@@ -16,12 +16,14 @@ namespace projet_wpf.ViewModels
 
         public ICommand ImportFilesCommand { get; }
         public ICommand ImportFolderCommand { get; }
+        public ICommand StartSlideShowCommand { get; }
 
         public MainViewModel()
         {
             Photos = new ObservableCollection<PhotoModel>();
             ImportFilesCommand = new RelayCommand(ImportFiles);
             ImportFolderCommand = new RelayCommand(ImportFolder);
+            StartSlideShowCommand = new RelayCommand(StartSlideShow, CanStartSlideShow); //2e param pour mettre en grisé le button si False
         }
 
         private void ImportFiles(object parameter)
@@ -61,5 +63,14 @@ namespace projet_wpf.ViewModels
             }
         }
 
+        // Retourne False si aucune photo n'est dans la Grid
+        private bool CanStartSlideShow(object parameter) => Photos.Count > 0;
+
+        // Démarre la Window du diapo
+        private void StartSlideShow(object parameter)
+        {
+            var window = new Views.SlideShowWindow(Photos);
+            window.ShowDialog();
+        }
     }
 }

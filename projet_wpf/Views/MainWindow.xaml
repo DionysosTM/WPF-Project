@@ -9,8 +9,9 @@
     <Grid>
         <DockPanel>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
-                <Button Content="📂 Importer fichiers" Command="{Binding ImportFilesCommand}" Margin="0,0,10,0"/>
+                <Button Content="📃 Importer fichiers" Command="{Binding ImportFilesCommand}" Margin="0,0,10,0"/>
                 <Button Content="📁 Importer dossier" Command="{Binding ImportFolderCommand}"/>
+                <Button Content="📽️ Diaporama" Command="{Binding StartSlideShowCommand}" Margin="10,0,0,0"/>
             </StackPanel>
 
 
