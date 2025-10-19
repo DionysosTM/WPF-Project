@@ -4,8 +4,10 @@ using projet_wpf.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Input;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace projet_wpf.ViewModels
 {
@@ -17,6 +19,7 @@ namespace projet_wpf.ViewModels
         public ICommand ImportFilesCommand { get; }
         public ICommand ImportFolderCommand { get; }
         public ICommand StartSlideShowCommand { get; }
+        public ICommand RotateImageCommand { get; }
 
         public MainViewModel()
         {
@@ -24,6 +27,7 @@ namespace projet_wpf.ViewModels
             ImportFilesCommand = new RelayCommand(ImportFiles);
             ImportFolderCommand = new RelayCommand(ImportFolder);
             StartSlideShowCommand = new RelayCommand(StartSlideShow, CanStartSlideShow); //2e param pour mettre en grisé le button si False
+            RotateImageCommand = new RelayCommand(RotateImage);
         }
 
         private void ImportFiles(object parameter)
@@ -71,6 +75,24 @@ namespace projet_wpf.ViewModels
         {
             var window = new Views.SlideShowWindow(Photos);
             window.ShowDialog();
+        }
+
+        // Rotate 90 degrés
+        private void RotateImage(object parameter)
+        {
+            if (parameter is PhotoModel photo)
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(photo.FilePath);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+
+                var rotated = new TransformedBitmap(bitmap, new System.Windows.Media.RotateTransform(90));
+
+                // Met à jour la propriété Thumbnail -> notifie la vue
+                photo.RotateBy(90);
+            }
         }
     }
 }

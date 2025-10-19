@@ -25,11 +25,23 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Padding="5">
-                                <Image Source="{Binding Thumbnail}"
-                                   Width="150" Height="150"
-                                   Stretch="UniformToFill" />
-                            </Border>
+                            <Grid>
+                                <!-- L'image miniature -->
+                                <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Padding="5">
+                                    <Image Source="{Binding Thumbnail}"
+                                    Width="150" Height="150"
+                                    Stretch="UniformToFill"/>
+                                </Border>
+
+                                <!-- Bouton de rotation superposé -->
+                                <Button Content="⟳"
+                                Width="25" Height="25"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Margin="2"
+                                Command="{Binding DataContext.RotateImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

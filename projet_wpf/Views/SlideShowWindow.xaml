@@ -11,7 +11,7 @@
     <!-- Grid qui contient l'image du diapo -->
     <Grid>
         <Image x:Name="DiapoImage"
-           Source="{Binding CurrentImage}"
+           Source="{Binding CurrentPhoto.FullImage}"
            Stretch="Uniform"
            HorizontalAlignment="Center"
            VerticalAlignment="Center"

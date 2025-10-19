@@ -15,14 +15,14 @@ namespace projet_wpf.ViewModels
         private readonly DispatcherTimer _timer;
 
         // Image en cours de diapo
-        private BitmapImage _currentImage;
-        public BitmapImage CurrentImage
+        private PhotoModel _currentPhoto;
+        public PhotoModel CurrentPhoto
         {
-            get => _currentImage;
+            get => _currentPhoto;
             set
             {
-                _currentImage = value;
-                OnPropertyChanged(nameof(CurrentImage));
+                _currentPhoto = value;
+                OnPropertyChanged(nameof(CurrentPhoto));
             }
         }
 
@@ -55,7 +55,7 @@ namespace projet_wpf.ViewModels
         // Met l'image en paramètre en visuel
         private void ShowImage(PhotoModel photo)
         {
-            CurrentImage = new BitmapImage(new Uri(photo.FilePath));
+            CurrentPhoto = _photos[_currentIndex];
         }
 
         // Stop le timer (si échap ou autre)

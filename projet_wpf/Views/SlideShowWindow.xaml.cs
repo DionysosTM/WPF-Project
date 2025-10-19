@@ -35,7 +35,7 @@ namespace projet_wpf.Views
         {
             _viewModel.PropertyChanged += (s, args) =>
             {
-                if (args.PropertyName == nameof(_viewModel.CurrentImage))
+                if (args.PropertyName == nameof(_viewModel.CurrentPhoto))
                 {
                     // Redémarre l'animation de fondu
                     var fade = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1));
