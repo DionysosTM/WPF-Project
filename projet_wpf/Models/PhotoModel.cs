@@ -11,10 +11,14 @@ namespace projet_wpf.Models
         public string FilePath { get; set; }
         public string FileName { get; set; }
         public DateTime DateAdded { get; set; }
-        private BitmapImage _originalBitmap;
         public double CurrentAngle { get; private set; } = 0;
+
+        // Image originale
+        private BitmapImage _originalBitmap;
+        // Miniature originale
         private BitmapSource _originalThumbnail;
 
+        // Image diaporama
         private ImageSource _fullImage;
         public ImageSource FullImage
         {
@@ -27,6 +31,7 @@ namespace projet_wpf.Models
             }
         }
 
+        // Image miniature
         private ImageSource _thumbnail;
         public ImageSource Thumbnail
         {
@@ -45,7 +50,7 @@ namespace projet_wpf.Models
             FileName = System.IO.Path.GetFileName(filePath);
             DateAdded = DateTime.Now;
 
-            // Charger l'image originale
+            // Image originale
             _originalBitmap = new BitmapImage();
             _originalBitmap.BeginInit();
             _originalBitmap.UriSource = new Uri(filePath);
@@ -55,7 +60,7 @@ namespace projet_wpf.Models
 
             FullImage = _originalBitmap;
 
-            // Thumbnail
+            // Image miniature
             var thumb = new BitmapImage();
             thumb.BeginInit();
             thumb.UriSource = new Uri(filePath);
@@ -73,10 +78,13 @@ namespace projet_wpf.Models
         public void RotateBy(double degrees)
         {
             CurrentAngle = (CurrentAngle + degrees) % 360;
+
+            // Rotater la diaporama
             var rotatedFull = new TransformedBitmap(_originalBitmap, new RotateTransform(CurrentAngle));
             rotatedFull.Freeze();
             FullImage = rotatedFull;
 
+            // Rotater la miniature
             var rotatedThumb = new TransformedBitmap(_originalThumbnail, new RotateTransform(CurrentAngle));
             rotatedThumb.Freeze();
             Thumbnail = rotatedThumb;
