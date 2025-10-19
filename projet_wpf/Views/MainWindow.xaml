@@ -3,25 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:projet_wpf.Views"
+        xmlns:local="clr-namespace:projet_wpf.Views" xmlns:viewmodels="clr-namespace:projet_wpf.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DockPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Column="0">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
                 <Button Content="📂 Importer fichiers" Command="{Binding ImportFilesCommand}" Margin="0,0,10,0"/>
                 <Button Content="📁 Importer dossier" Command="{Binding ImportFolderCommand}"/>
+                <ComboBox ItemsSource="{Binding FileTypes}"
+                          SelectedItem="{Binding SelectedFileType, Mode=TwoWay}"
+                          Width="150"/>
             </StackPanel>
 
 
             <ScrollViewer>
-                <ItemsControl ItemsSource="{Binding Photos}">
+                <ItemsControl ItemsSource="{Binding VisiblePhotos}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Padding="5">
@@ -34,6 +40,38 @@
                 </ItemsControl>
             </ScrollViewer>
         </DockPanel>
-
+       
+        <WrapPanel Grid.Column="1" Background="CornflowerBlue">
+            <TextBlock Text="Trier" Foreground="White" FontSize="16" Margin="10" HorizontalAlignment="Stretch"/>
+            <RadioButton Content="Par nom" Margin="10" GroupName="sort" Checked="Sort"/>
+            <RadioButton Content="Par date" Margin="10" GroupName="sort" Checked="Sort"/>
+            <RadioButton Content="Par taille" Margin="10" GroupName="sort" Checked="Sort"/>
+            <RadioButton Content="Par type" Margin="10" GroupName="sort" Checked="Sort"/>
+            <ToggleButton x:Name="SortToggle"
+              Margin="10"
+              Width="120"
+              FontWeight="Bold"
+              Checked="callToggleOrder"
+              Unchecked="callToggleOrder"
+              IsChecked="True"
+              HorizontalAlignment="Stretch">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="LightGreen"/>
+                                <Setter Property="Foreground" Value="DarkGreen"/>
+                                <Setter Property="Content" Value="⭡ Croissant"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Background" Value="LightSalmon"/>
+                                <Setter Property="Foreground" Value="DarkRed"/>
+                                <Setter Property="Content" Value="⭣ Décroissant"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+        </WrapPanel>
     </Grid>
 </Window>

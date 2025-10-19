@@ -22,5 +22,36 @@ namespace projet_wpf.Views
             InitializeComponent();
             DataContext = new MainViewModel();
         }
+
+        private void Sort(object sender, RoutedEventArgs e)
+        {
+            var radio = sender as RadioButton;
+            if (radio == null || radio.Content == null) return;
+
+            if (DataContext is MainViewModel vm)
+            {
+                vm.SortBy(radio.Content?.ToString());
+            }
+        }
+
+        private void callToggleOrder(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                vm.ToggleOrder();
+            }
+        }
+
+        private void FilterByType(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                var comboBox = sender as ComboBox;
+                if (comboBox != null && comboBox.SelectedItem != null)
+                {
+                    vm.FilterByFileType(comboBox.SelectedItem.ToString());
+                }
+            }
+        }
     }
 }
