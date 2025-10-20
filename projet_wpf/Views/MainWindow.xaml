@@ -34,24 +34,50 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <!-- L'image miniature -->
-                                <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Padding="5">
-                                    <Image Source="{Binding Thumbnail}"
-                                    Width="150" Height="150"
-                                    Stretch="UniformToFill"
-                                    MouseLeftButtonDown="OnPhotoMouseLeftButtonDown"/>
-                                </Border>
+                            <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Padding="5" CornerRadius="6">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding Thumbnail}"
+                                           Width="150" Height="150"
+                                           Stretch="UniformToFill"
+                                           MouseLeftButtonDown="OnPhotoMouseLeftButtonDown"/>
 
-                                <!-- Bouton de rotation superposé -->
-                                <Button Content="⟳"
-                                        Width="25" Height="25"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Margin="2"
-                                        Command="{Binding DataContext.RotateImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                        CommandParameter="{Binding}"/>
-                            </Grid>
+                                        <Button Content="⟳"
+                                            Width="25" Height="25"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Margin="2"
+                                            Command="{Binding DataContext.RotateImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"/>
+
+                                        <Button Content="🏷️"
+                                            Width="25" Height="25"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Margin="2"
+                                            Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"/>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding FileName}"
+                                       FontWeight="Bold"
+                                       FontSize="13"
+                                       Foreground="Black"
+                                       TextAlignment="Center"
+                                       Margin="0,6,0,0"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="150"/>
+
+                                    <TextBlock Text="{Binding TagsString}"
+                                       Foreground="DarkSlateGray"
+                                       FontStyle="Italic"
+                                       FontSize="12"
+                                       TextAlignment="Center"
+                                       Margin="0,2,0,0"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="150"/>
+                                </StackPanel>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

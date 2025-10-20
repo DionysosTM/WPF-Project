@@ -25,6 +25,7 @@ namespace projet_wpf.ViewModels
         public ICommand ImportFolderCommand { get; }
         public ICommand StartSlideShowCommand { get; }
         public ICommand RotateImageCommand { get; }
+        public ICommand AddTagCommand { get; }
 
         public string orderType { get; set; }
         private string _selectedSortOption = "Par date";
@@ -73,6 +74,7 @@ namespace projet_wpf.ViewModels
             SelectedFileType = "Tous";
             StartSlideShowCommand = new RelayCommand(StartSlideShow, CanStartSlideShow); //2e param pour mettre en grisé le button si False
             RotateImageCommand = new RelayCommand(RotateImage);
+            AddTagCommand = new RelayCommand(AddTagToPhoto);
         }
 
         #region add photo
@@ -231,6 +233,7 @@ namespace projet_wpf.ViewModels
                 string lower = SearchText.ToLower();
                 filtered = filtered.Where(p =>
                     p.FileName.ToLower().Contains(lower)
+                    || p.Tags.Any(t => t.Contains(lower))
                 ).ToList();
             }
 
@@ -239,6 +242,21 @@ namespace projet_wpf.ViewModels
 
             SortBy(_selectedSortOption);
         }
+
+        private void AddTagToPhoto(object parameter)
+        {
+            if (parameter is PhotoModel photo)
+            {
+                var input = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Entrez un tag à ajouter :", "Ajouter un tag", "");
+
+                if (!string.IsNullOrWhiteSpace(input))
+                {
+                    photo.AddTag(input);
+                }
+            }
+        }
+
 
     }
 }

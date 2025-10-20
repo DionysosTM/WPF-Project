@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media;
@@ -43,6 +44,19 @@ namespace projet_wpf.Models
                     _thumbnail = value;
                     OnPropertyChanged(nameof(Thumbnail));
                 }
+            }
+        }
+
+        private ObservableCollection<string> _tags = new ObservableCollection<string>();
+        public string TagsString => string.Join(", ", Tags);
+        public ObservableCollection<string> Tags
+        {
+            get => _tags;
+            set
+            {
+                _tags = value;
+                OnPropertyChanged(nameof(Tags));
+                OnPropertyChanged(nameof(TagsString));
             }
         }
 
@@ -92,6 +106,25 @@ namespace projet_wpf.Models
             var rotatedThumb = new TransformedBitmap(_originalThumbnail, new RotateTransform(CurrentAngle));
             rotatedThumb.Freeze();
             Thumbnail = rotatedThumb;
+        }
+
+        public void AddTag(string tag)
+        {
+            tag = tag.Trim().ToLower();
+            if (!string.IsNullOrWhiteSpace(tag) && !Tags.Contains(tag))
+            {
+                Tags.Add(tag);
+                OnPropertyChanged(nameof(TagsString));
+            }
+        }
+
+        public void RemoveTag(string tag)
+        {
+            if (Tags.Contains(tag))
+            {
+                Tags.Remove(tag);
+                OnPropertyChanged(nameof(TagsString));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
