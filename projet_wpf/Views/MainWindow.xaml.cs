@@ -66,6 +66,5 @@ namespace projet_wpf.Views
                 }
             }
         }
-
     }
 }

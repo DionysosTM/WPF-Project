@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -47,9 +48,9 @@ namespace projet_wpf.Models
             }
         }
 
-        private ObservableCollection<string> _tags = new ObservableCollection<string>();
-        public string TagsString => string.Join(", ", Tags);
-        public ObservableCollection<string> Tags
+        private ObservableCollection<TagItem> _tags = new ObservableCollection<TagItem>();
+        public string TagsString => string.Join(", ", Tags.Select(t => t.Text));
+        public ObservableCollection<TagItem> Tags
         {
             get => _tags;
             set
@@ -111,18 +112,9 @@ namespace projet_wpf.Models
         public void AddTag(string tag)
         {
             tag = tag.Trim().ToLower();
-            if (!string.IsNullOrWhiteSpace(tag) && !Tags.Contains(tag))
+            if (!string.IsNullOrWhiteSpace(tag) && !Tags.Any(t => t.Text == tag))
             {
-                Tags.Add(tag);
-                OnPropertyChanged(nameof(TagsString));
-            }
-        }
-
-        public void RemoveTag(string tag)
-        {
-            if (Tags.Contains(tag))
-            {
-                Tags.Remove(tag);
+                Tags.Add(new TagItem { Text = tag });
                 OnPropertyChanged(nameof(TagsString));
             }
         }

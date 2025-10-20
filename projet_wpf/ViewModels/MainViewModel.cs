@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace projet_wpf.ViewModels
 {
@@ -26,6 +27,7 @@ namespace projet_wpf.ViewModels
         public ICommand StartSlideShowCommand { get; }
         public ICommand RotateImageCommand { get; }
         public ICommand AddTagCommand { get; }
+        public ICommand EditTagsCommand { get; }
 
         public string orderType { get; set; }
         private string _selectedSortOption = "Par date";
@@ -75,6 +77,7 @@ namespace projet_wpf.ViewModels
             StartSlideShowCommand = new RelayCommand(StartSlideShow, CanStartSlideShow); //2e param pour mettre en grisé le button si False
             RotateImageCommand = new RelayCommand(RotateImage);
             AddTagCommand = new RelayCommand(AddTagToPhoto);
+            EditTagsCommand = new RelayCommand(EditTagsForPhoto);
         }
 
         #region add photo
@@ -233,7 +236,7 @@ namespace projet_wpf.ViewModels
                 string lower = SearchText.ToLower();
                 filtered = filtered.Where(p =>
                     p.FileName.ToLower().Contains(lower)
-                    || p.Tags.Any(t => t.Contains(lower))
+                    || p.Tags.Any(t => t.Text.ToLower().Contains(lower))
                 ).ToList();
             }
 
@@ -247,16 +250,23 @@ namespace projet_wpf.ViewModels
         {
             if (parameter is PhotoModel photo)
             {
-                var input = Microsoft.VisualBasic.Interaction.InputBox(
-                    "Entrez un tag à ajouter :", "Ajouter un tag", "");
-
-                if (!string.IsNullOrWhiteSpace(input))
-                {
-                    photo.AddTag(input);
-                }
+                var window = new Views.EditTagsWindow(photo);
+                window.ShowDialog();
             }
         }
 
+        private void EditTagsForPhoto(object parameter)
+        {
+            if (parameter is TagItem tag)
+            {
+                var photo = Photos.FirstOrDefault(p => p.Tags.Contains(tag));
+                if (photo != null)
+                {
+                    var window = new Views.EditTagsWindow(photo);
+                    window.ShowDialog();
+                }
+            }
+        }
 
     }
 }

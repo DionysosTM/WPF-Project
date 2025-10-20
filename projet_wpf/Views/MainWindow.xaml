@@ -4,8 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:projet_wpf.Views" xmlns:viewmodels="clr-namespace:projet_wpf.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        xmlns:helpers="clr-namespace:projet_wpf.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <Window.Resources>
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*" />
@@ -68,14 +75,28 @@
                                        TextWrapping="Wrap"
                                        MaxWidth="150"/>
 
-                                    <TextBlock Text="{Binding TagsString}"
-                                       Foreground="DarkSlateGray"
-                                       FontStyle="Italic"
-                                       FontSize="12"
-                                       TextAlignment="Center"
-                                       Margin="0,2,0,0"
-                                       TextWrapping="Wrap"
-                                       MaxWidth="150"/>
+                                    <ItemsControl ItemsSource="{Binding Tags}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel HorizontalAlignment="Center"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="LightGray" CornerRadius="4" Margin="2" Padding="3">
+                                                    <Button Content="{Binding Text}"
+                                                            FontSize="11"
+                                                            Foreground="DarkSlateGray"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Command="{Binding DataContext.EditTagsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                    </Button>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
