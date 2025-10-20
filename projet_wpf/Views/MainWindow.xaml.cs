@@ -1,4 +1,5 @@
-﻿using projet_wpf.ViewModels;
+﻿using projet_wpf.Models;
+using projet_wpf.ViewModels;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,5 +54,18 @@ namespace projet_wpf.Views
                 }
             }
         }
+
+        private void OnPhotoMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                if (sender is System.Windows.Controls.Image image && image.DataContext is PhotoModel photo)
+                {
+                    var window = new PhotoViewWindow(photo);
+                    window.ShowDialog();
+                }
+            }
+        }
+
     }
 }

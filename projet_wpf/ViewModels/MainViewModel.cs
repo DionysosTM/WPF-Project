@@ -43,6 +43,21 @@ namespace projet_wpf.ViewModels
             }
         }
 
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText != value)
+                {
+                    _searchText = value;
+                    OnPropertyChanged(nameof(SearchText));
+                    ApplyFilters();
+                }
+            }
+        }
+
 
         public MainViewModel()
         {
@@ -203,5 +218,27 @@ namespace projet_wpf.ViewModels
                 photo.RotateBy(90);
             }
         }
+
+        private void ApplyFilters()
+        {
+            var filtered = Photos.ToList();
+
+            if (_selectedFileType != "Tous" && _selectedFileType != null)
+                filtered = filtered.Where(p => p.FileType == _selectedFileType).ToList();
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                string lower = SearchText.ToLower();
+                filtered = filtered.Where(p =>
+                    p.FileName.ToLower().Contains(lower)
+                ).ToList();
+            }
+
+            VisiblePhotos = new ObservableCollection<PhotoModel>(filtered);
+            OnPropertyChanged(nameof(VisiblePhotos));
+
+            SortBy(_selectedSortOption);
+        }
+
     }
 }
