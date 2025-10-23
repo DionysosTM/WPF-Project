@@ -18,29 +18,32 @@
             <ColumnDefinition Width="5*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
+
         <DockPanel Grid.Column="0">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
-                <Button Content="📃 Importer fichiers" Command="{Binding ImportFilesCommand}" Margin="0,0,10,0"/>
-                <Button Content="📁 Importer dossier" Command="{Binding ImportFolderCommand}"/>
-               
-                <ComboBox ItemsSource="{Binding FileTypes}"
+                <TextBlock Text="Rechercher par tag :" FontSize="10" FontWeight="Bold" Foreground="CornflowerBlue" VerticalAlignment="Center"/>
+                <TextBox Margin="5"
+                         VerticalAlignment="Center"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+                <Button Content="📃" ToolTip="Importer fichier(s)" Command="{Binding ImportFilesCommand}" Margin="0,20,10,10" Height="20"/>
+                <Button Content="📁" ToolTip="Importer un dossier"  Command="{Binding ImportFolderCommand}" Height="20" Margin="0,20,10,10"/>
+                <StackPanel Orientation="Vertical" Margin="0,0,10,10">
+                    <TextBlock Text="Type de fichier" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding FileTypes}"
                           SelectedItem="{Binding SelectedFileType, Mode=TwoWay}"
-                          Width="150" Margin="10"/>
-                <ComboBox ItemsSource="{Binding ColorCategories}"
+                          Width="100" Margin="0,5,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,0,10,10">
+                    <TextBlock Text="Catégorie de couleur" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding ColorCategories}"
                           SelectedItem="{Binding SelectedColorCategory, Mode=TwoWay}"
-                          Width="140" Margin="10">
-                          <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" Margin="6,0,0,0"/>
-                                </StackPanel>
-                            </DataTemplate>
-                          </ComboBox.ItemTemplate>
-                </ComboBox>
-                <Button Content="📽️ Diaporama" Command="{Binding StartSlideShowCommand}" Margin="10,0,0,0"/>
-                <TextBox Width="100" Margin="10,0,0,0"
-                     VerticalAlignment="Center"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                          Width="100" Margin="0,5,0,0">
+                    </ComboBox>
+                </StackPanel>
+                <Button Content="📽️" ToolTip="Diaporama" Command="{Binding StartSlideShowCommand}" Margin="0,20,10,10" Height="20" />
+                
             </StackPanel>
 
 
@@ -117,7 +120,7 @@
             </ScrollViewer>
         </DockPanel>
        
-        <WrapPanel Grid.Column="1" Background="CornflowerBlue">
+        <WrapPanel Grid.Column="1" Background="CornflowerBlue" Orientation="Vertical">
             <TextBlock Text="Trier" Foreground="White" FontSize="16" Margin="10" HorizontalAlignment="Stretch"/>
             <RadioButton Content="Par nom" Margin="10" GroupName="sort" Checked="Sort"/>
             <RadioButton Content="Par date" Margin="10" GroupName="sort" Checked="Sort"/>

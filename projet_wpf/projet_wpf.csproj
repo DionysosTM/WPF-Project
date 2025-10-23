@@ -11,8 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccess\" />
-    <Folder Include="Services\" />
+    <Compile Remove="DataAccess\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="DataAccess\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="DataAccess\**" />
+    <None Remove="Services\**" />
+    <Page Remove="DataAccess\**" />
+    <Page Remove="Services\**" />
   </ItemGroup>
 
 	<ItemGroup>
