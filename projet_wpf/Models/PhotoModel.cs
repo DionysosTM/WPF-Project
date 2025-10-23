@@ -107,6 +107,8 @@ namespace projet_wpf.Models
             _originalThumbnail = thumb;
             Thumbnail = thumb;
 
+
+
             Task.Run(() =>
             {
                 var color = GetDominantColorFromBitmapSource(_originalThumbnail, quantizeBitsPerChannel: 5);
@@ -156,7 +158,7 @@ namespace projet_wpf.Models
             byte[] pixels = new byte[h * stride];
             converted.CopyPixels(pixels, stride, 0);
 
-            var counts = new System.Collections.Generic.Dictionary<int, int>();
+            var counts = new Dictionary<int, int>();
 
             int shift = 8 - quantizeBitsPerChannel;
             for (int y = 0; y < h; y++)
