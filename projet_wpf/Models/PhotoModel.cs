@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -48,6 +49,20 @@ namespace projet_wpf.Models
             }
         }
 
+        private Color _dominantColor = Colors.Transparent;
+        public Color DominantColor
+        {
+            get => _dominantColor;
+            set
+            {
+                if (_dominantColor == value) return;
+                _dominantColor = value;
+                OnPropertyChanged(nameof(DominantColor));
+                OnPropertyChanged(nameof(DominantColorHex));
+            }
+        }
+        public string DominantColorHex => $"#{DominantColor.R:X2}{DominantColor.G:X2}{DominantColor.B:X2}";
+
         private ObservableCollection<TagItem> _tags = new ObservableCollection<TagItem>();
         public string TagsString => string.Join(", ", Tags.Select(t => t.Text));
         public ObservableCollection<TagItem> Tags
@@ -91,6 +106,15 @@ namespace projet_wpf.Models
             // Stocker la miniature originale
             _originalThumbnail = thumb;
             Thumbnail = thumb;
+
+            Task.Run(() =>
+            {
+                var color = GetDominantColorFromBitmapSource(_originalThumbnail, quantizeBitsPerChannel: 5);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    DominantColor = color;
+                });
+            });
         }
 
         // Méthode pour faire rotate l'image
@@ -117,6 +141,55 @@ namespace projet_wpf.Models
                 Tags.Add(new TagItem { Text = tag });
                 OnPropertyChanged(nameof(TagsString));
             }
+        }
+
+        private static Color GetDominantColorFromBitmapSource(BitmapSource bitmap, int quantizeBitsPerChannel = 5)
+        {
+            if (bitmap == null) return Colors.Transparent;
+
+            var converted = new FormatConvertedBitmap(bitmap, PixelFormats.Bgra32, null, 0);
+            converted.Freeze();
+
+            int w = converted.PixelWidth;
+            int h = converted.PixelHeight;
+            int stride = w * 4;
+            byte[] pixels = new byte[h * stride];
+            converted.CopyPixels(pixels, stride, 0);
+
+            var counts = new System.Collections.Generic.Dictionary<int, int>();
+
+            int shift = 8 - quantizeBitsPerChannel;
+            for (int y = 0; y < h; y++)
+            {
+                int offset = y * stride;
+                for (int x = 0; x < w; x++)
+                {
+                    byte b = pixels[offset + 0];
+                    byte g = pixels[offset + 1];
+                    byte r = pixels[offset + 2];
+                    int rq = r >> shift;
+                    int gq = g >> shift;
+                    int bq = b >> shift;
+                    int key = (rq << (2 * quantizeBitsPerChannel)) | (gq << quantizeBitsPerChannel) | bq;
+                    if (counts.ContainsKey(key)) counts[key]++; else counts[key] = 1;
+                    offset += 4;
+                }
+            }
+
+            if (counts.Count == 0) return Colors.Transparent;
+
+            var best = counts.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+
+            int mask = (1 << quantizeBitsPerChannel) - 1;
+            int br = (best >> (2 * quantizeBitsPerChannel)) & mask;
+            int bg = (best >> quantizeBitsPerChannel) & mask;
+            int bb = best & mask;
+
+            byte r8 = (byte)((br << shift) | (br >> (quantizeBitsPerChannel - shift)));
+            byte g8 = (byte)((bg << shift) | (bg >> (quantizeBitsPerChannel - shift)));
+            byte b8 = (byte)((bb << shift) | (bb >> (quantizeBitsPerChannel - shift)));
+
+            return Color.FromRgb(r8, g8, b8);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

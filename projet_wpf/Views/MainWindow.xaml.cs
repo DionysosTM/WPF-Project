@@ -43,18 +43,6 @@ namespace projet_wpf.Views
             }
         }
 
-        private void FilterByType(object sender, SelectionChangedEventArgs e)
-        {
-            if (DataContext is MainViewModel vm)
-            {
-                var comboBox = sender as ComboBox;
-                if (comboBox != null && comboBox.SelectedItem != null)
-                {
-                    vm.FilterByFileType(comboBox.SelectedItem.ToString());
-                }
-            }
-        }
-
         private void OnPhotoMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)

@@ -22,9 +22,21 @@
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
                 <Button Content="📃 Importer fichiers" Command="{Binding ImportFilesCommand}" Margin="0,0,10,0"/>
                 <Button Content="📁 Importer dossier" Command="{Binding ImportFolderCommand}"/>
+               
                 <ComboBox ItemsSource="{Binding FileTypes}"
                           SelectedItem="{Binding SelectedFileType, Mode=TwoWay}"
                           Width="150" Margin="10"/>
+                <ComboBox ItemsSource="{Binding ColorCategories}"
+                          SelectedItem="{Binding SelectedColorCategory, Mode=TwoWay}"
+                          Width="140" Margin="10">
+                          <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                          </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Button Content="📽️ Diaporama" Command="{Binding StartSlideShowCommand}" Margin="10,0,0,0"/>
                 <TextBox Width="100" Margin="10,0,0,0"
                      VerticalAlignment="Center"

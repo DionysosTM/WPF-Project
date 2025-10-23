@@ -34,6 +34,19 @@ namespace projet_wpf.ViewModels
 
         public ObservableCollection<string> FileTypes { get; } = new ObservableCollection<string>();
         private string _selectedFileType = "Tous";
+        public ObservableCollection<string> ColorCategories { get; } = new ObservableCollection<string>();
+        private string _selectedColorCategory;
+        public string SelectedColorCategory
+        {
+            get => _selectedColorCategory;
+            set
+            {
+                if (_selectedColorCategory == value) return;
+                _selectedColorCategory = value;
+                OnPropertyChanged(nameof(SelectedColorCategory));
+                Filter(_selectedFileType, _selectedColorCategory);
+            }
+        }
         public string SelectedFileType
         {
             get => _selectedFileType;
@@ -42,7 +55,7 @@ namespace projet_wpf.ViewModels
                 if (_selectedFileType == value) return;
                 _selectedFileType = value;
                 OnPropertyChanged(nameof(SelectedFileType));
-                FilterByFileType(_selectedFileType);
+                Filter(_selectedFileType, _selectedColorCategory);
             }
         }
 
@@ -78,6 +91,20 @@ namespace projet_wpf.ViewModels
             RotateImageCommand = new RelayCommand(RotateImage);
             AddTagCommand = new RelayCommand(AddTagToPhoto);
             EditTagsCommand = new RelayCommand(EditTagsForPhoto);
+
+            ColorCategories.Add("Tous");
+            ColorCategories.Add("Noir");
+            ColorCategories.Add("Blanc");
+            ColorCategories.Add("Gris");
+            ColorCategories.Add("Rouge");
+            ColorCategories.Add("Orange");
+            ColorCategories.Add("Jaune");
+            ColorCategories.Add("Vert");
+            ColorCategories.Add("Cyan");
+            ColorCategories.Add("Bleu");
+            ColorCategories.Add("Violet");
+            ColorCategories.Add("Magenta");
+            SelectedColorCategory = "Tous";
         }
 
         #region add photo
@@ -153,14 +180,18 @@ namespace projet_wpf.ViewModels
             SortBy(_selectedSortOption);
         }
 
-        public void FilterByFileType(string fileType)
+        public void Filter(string fileType, string colorCategory)
         {
             _selectedFileType = fileType;
+            _selectedColorCategory = colorCategory;
             List<PhotoModel> filteredList = Photos.ToList();
-           
-            if(_selectedFileType != "Tous" && _selectedFileType != null)
+            if (_selectedFileType != "Tous" && _selectedFileType != null)
             {
                 filteredList = filteredList.Where(photo => photo.FileType == _selectedFileType).ToList();
+            }
+            if (_selectedColorCategory != "Tous" && _selectedColorCategory != null)
+            {
+                filteredList = filteredList.Where(photo => ColorsHelper.GetColorCategory(photo.DominantColor) == _selectedColorCategory).ToList();
             }
             VisiblePhotos = new ObservableCollection<PhotoModel>(filteredList);
             OnPropertyChanged(nameof(VisiblePhotos));
