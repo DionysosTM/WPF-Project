@@ -29,6 +29,8 @@ namespace projet_wpf.ViewModels
         public ICommand AddTagCommand { get; }
         public ICommand EditTagsCommand { get; }
         public ICommand ToggleThemeCommand { get; }
+        public ICommand DeleteImageCommand { get; }
+
 
         public string orderType { get; set; }
         private string _selectedSortOption = "Par date";
@@ -117,6 +119,7 @@ namespace projet_wpf.ViewModels
             AddTagCommand = new RelayCommand(AddTagToPhoto);
             EditTagsCommand = new RelayCommand(EditTagsForPhoto);
             ToggleThemeCommand = new RelayCommand(_ => IsDarkTheme = !IsDarkTheme);
+            DeleteImageCommand = new RelayCommand(DeleteImage);
 
             ColorCategories.Add("Tous");
             ColorCategories.Add("Noir");
@@ -334,6 +337,21 @@ namespace projet_wpf.ViewModels
             var dict = new ResourceDictionary() { Source = new Uri(themePath, UriKind.Relative) };
             dictionaries.Add(dict);
         }
+
+        private void DeleteImage(object parameter)
+        {
+            if (parameter is PhotoModel photo)
+            {
+                if (Photos.Contains(photo))
+                    Photos.Remove(photo);
+
+                if (VisiblePhotos.Contains(photo))
+                    VisiblePhotos.Remove(photo);
+
+                OnPropertyChanged(nameof(VisiblePhotos));
+            }
+        }
+
 
     }
 }

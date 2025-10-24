@@ -108,6 +108,10 @@
                                         <Button Content="🏷️" Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"
                                                 Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 CommandParameter="{Binding}"/>
+
+                                        <Button Content="🗑" Width="25" Height="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2,30,2,0"
+                                                Command="{Binding DataContext.DeleteImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"/>
                                     </Grid>
 
                                     <TextBlock Text="{Binding FileName}" FontWeight="Bold" TextAlignment="Center" Margin="0,6,0,0" TextWrapping="Wrap" MaxWidth="150"/>
