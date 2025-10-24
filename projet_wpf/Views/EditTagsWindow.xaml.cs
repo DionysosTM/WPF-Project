@@ -1,4 +1,5 @@
-﻿using projet_wpf.Models;
+﻿using Microsoft.VisualBasic;
+using projet_wpf.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,8 +27,8 @@ namespace projet_wpf.Views
         public EditTagsWindow(PhotoModel photo)
         {
             InitializeComponent();
-            Tags = photo.Tags; // On utilise directement la collection du PhotoModel
-            TagsListBox.ItemsSource = Tags;
+            Tags = photo.Tags;
+            DataContext = this;
         }
 
         private void AddTag_Click(object sender, RoutedEventArgs e)
@@ -40,12 +41,11 @@ namespace projet_wpf.Views
             }
         }
 
-        private void EditTag_Click(object sender, RoutedEventArgs e)
+        private void EditTag_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (TagsListBox.SelectedItem is TagItem tag)
+            if (sender is TextBlock tb && tb.DataContext is TagItem tag)
             {
-                var input = Microsoft.VisualBasic.Interaction.InputBox(
-                    "Modifiez le tag :", "Modifier un tag", tag.Text);
+                var input = Interaction.InputBox("Modifiez le tag :", "Modifier un tag", tag.Text);
                 if (!string.IsNullOrWhiteSpace(input))
                 {
                     tag.Text = input.Trim().ToLower();
@@ -56,7 +56,7 @@ namespace projet_wpf.Views
 
         private void DeleteTag_Click(object sender, RoutedEventArgs e)
         {
-            if (TagsListBox.SelectedItem is TagItem tag)
+            if (sender is Button btn && btn.Tag is TagItem tag)
             {
                 Tags.Remove(tag);
             }

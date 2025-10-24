@@ -28,6 +28,7 @@ namespace projet_wpf.ViewModels
         public ICommand RotateImageCommand { get; }
         public ICommand AddTagCommand { get; }
         public ICommand EditTagsCommand { get; }
+        public ICommand ToggleThemeCommand { get; }
 
         public string orderType { get; set; }
         private string _selectedSortOption = "Par date";
@@ -75,6 +76,30 @@ namespace projet_wpf.ViewModels
         }
 
 
+        public string ThemeIcon => _isDarkTheme ? "🌙" : "☀️";
+
+        public Brush ThemeIconColor => _isDarkTheme ? Brushes.Gold : Brushes.Orange;
+
+        private bool _isDarkTheme = false;
+
+        public bool IsDarkTheme
+        {
+            get => _isDarkTheme;
+            set
+            {
+                if (_isDarkTheme != value)
+                {
+                    _isDarkTheme = value;
+                    OnPropertyChanged(nameof(IsDarkTheme));
+                    OnPropertyChanged(nameof(ThemeIcon));
+                    OnPropertyChanged(nameof(ThemeIconColor));
+                    ApplyTheme();
+                }
+            }
+        }
+
+
+
         public MainViewModel()
         {
             Photos = new ObservableCollection<PhotoModel>();
@@ -91,6 +116,7 @@ namespace projet_wpf.ViewModels
             RotateImageCommand = new RelayCommand(RotateImage);
             AddTagCommand = new RelayCommand(AddTagToPhoto);
             EditTagsCommand = new RelayCommand(EditTagsForPhoto);
+            ToggleThemeCommand = new RelayCommand(_ => IsDarkTheme = !IsDarkTheme);
 
             ColorCategories.Add("Tous");
             ColorCategories.Add("Noir");
@@ -297,6 +323,16 @@ namespace projet_wpf.ViewModels
                     window.ShowDialog();
                 }
             }
+        }
+
+        private void ApplyTheme()
+        {
+            var dictionaries = System.Windows.Application.Current.Resources.MergedDictionaries;
+            dictionaries.Clear();
+
+            string themePath = IsDarkTheme ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml";
+            var dict = new ResourceDictionary() { Source = new Uri(themePath, UriKind.Relative) };
+            dictionaries.Add(dict);
         }
 
     }

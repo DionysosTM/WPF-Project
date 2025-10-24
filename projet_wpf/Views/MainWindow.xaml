@@ -3,92 +3,114 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:projet_wpf.Views" xmlns:viewmodels="clr-namespace:projet_wpf.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        xmlns:viewmodels="clr-namespace:projet_wpf.ViewModels"
         xmlns:helpers="clr-namespace:projet_wpf.Helpers"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        Background="{DynamicResource PrimaryBackground}"
+        Foreground="{DynamicResource PrimaryForeground}"
+        Title="MainWindow"
+        Height="650"
+        Width="1000"
+        mc:Ignorable="d">
 
     <Window.Resources>
-        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </Window.Resources>
 
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <Style x:Key="ThemeButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Column="0">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
-                <TextBlock Text="Rechercher par tag :" FontSize="10" FontWeight="Bold" Foreground="CornflowerBlue" VerticalAlignment="Center"/>
-                <TextBox Margin="5"
-                         VerticalAlignment="Center"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
-                <Button Content="📃" ToolTip="Importer fichier(s)" Command="{Binding ImportFilesCommand}" Margin="0,20,10,10" Height="20"/>
-                <Button Content="📁" ToolTip="Importer un dossier"  Command="{Binding ImportFolderCommand}" Height="20" Margin="0,20,10,10"/>
-                <StackPanel Orientation="Vertical" Margin="0,0,10,10">
-                    <TextBlock Text="Type de fichier" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding FileTypes}"
-                          SelectedItem="{Binding SelectedFileType, Mode=TwoWay}"
-                          Width="100" Margin="0,5,0,0"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="0,0,10,10">
-                    <TextBlock Text="Catégorie de couleur" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding ColorCategories}"
-                          SelectedItem="{Binding SelectedColorCategory, Mode=TwoWay}"
-                          Width="100" Margin="0,5,0,0">
-                    </ComboBox>
-                </StackPanel>
-                <Button Content="📽️" ToolTip="Diaporama" Command="{Binding StartSlideShowCommand}" Margin="0,20,10,10" Height="20" />
-                
-            </StackPanel>
 
+            <DockPanel DockPanel.Dock="Top" Margin="10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Rechercher par tag :" FontSize="10" FontWeight="Bold" Foreground="CornflowerBlue" VerticalAlignment="Center"/>
+                    <TextBox Margin="5" Width="300"
+                             VerticalAlignment="Center"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <Button Content="{Binding ThemeIcon}"
+                        Command="{Binding ToggleThemeCommand}"
+                        ToolTip="Changer le thème"
+                        Foreground="{Binding ThemeIconColor}"
+                        Style="{StaticResource ThemeButtonStyle}"/>
+            </DockPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+                <Button Content="📃" ToolTip="Importer fichier(s)" Command="{Binding ImportFilesCommand}" Height="25" Margin="0,0,10,0"/>
+                <Button Content="📁" ToolTip="Importer un dossier" Command="{Binding ImportFolderCommand}" Height="25" Margin="0,0,10,0"/>
+
+                <StackPanel Orientation="Vertical" Margin="0,0,10,0">
+                    <TextBlock Text="Type de fichier"/>
+                    <ComboBox ItemsSource="{Binding FileTypes}" SelectedItem="{Binding SelectedFileType}" Width="100" Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0,0,10,0">
+                    <TextBlock Text="Catégorie de couleur"/>
+                    <ComboBox ItemsSource="{Binding ColorCategories}" SelectedItem="{Binding SelectedColorCategory}" Width="100" Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <Button Content="📽️" ToolTip="Diaporama" Command="{Binding StartSlideShowCommand}" Height="25"/>
+            </StackPanel>
 
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding VisiblePhotos}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" />
+                            <WrapPanel IsItemsHost="True"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Padding="5" CornerRadius="6">
+                            <Border Margin="5" Padding="5" BorderThickness="1" CornerRadius="6" BorderBrush="Gray">
                                 <StackPanel HorizontalAlignment="Center">
+
                                     <Grid>
-                                        <Image Source="{Binding Thumbnail}"
-                                           Width="150" Height="150"
-                                           Stretch="UniformToFill"
-                                           MouseLeftButtonDown="OnPhotoMouseLeftButtonDown"/>
+                                        <Image Source="{Binding Thumbnail}" Width="150" Height="150" Stretch="UniformToFill" MouseLeftButtonDown="OnPhotoMouseLeftButtonDown"/>
 
-                                        <Button Content="⟳"
-                                            Width="25" Height="25"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Margin="2"
-                                            Command="{Binding DataContext.RotateImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"/>
+                                        <Button Content="⟳" Width="25" Height="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2"
+                                                Command="{Binding DataContext.RotateImageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"/>
 
-                                        <Button Content="🏷️"
-                                            Width="25" Height="25"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Top"
-                                            Margin="2"
-                                            Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"/>
+                                        <Button Content="🏷️" Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"
+                                                Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"/>
                                     </Grid>
 
-                                    <TextBlock Text="{Binding FileName}"
-                                       FontWeight="Bold"
-                                       FontSize="13"
-                                       Foreground="Black"
-                                       TextAlignment="Center"
-                                       Margin="0,6,0,0"
-                                       TextWrapping="Wrap"
-                                       MaxWidth="150"/>
+                                    <TextBlock Text="{Binding FileName}" FontWeight="Bold" TextAlignment="Center" Margin="0,6,0,0" TextWrapping="Wrap" MaxWidth="150"/>
 
                                     <ItemsControl ItemsSource="{Binding Tags}">
                                         <ItemsControl.ItemsPanel>
@@ -96,61 +118,129 @@
                                                 <WrapPanel HorizontalAlignment="Center"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
-
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Background="LightGray" CornerRadius="4" Margin="2" Padding="3">
-                                                    <Button Content="{Binding Text}"
-                                                            FontSize="11"
-                                                            Foreground="DarkSlateGray"
-                                                            Background="Transparent"
-                                                            BorderThickness="0"
+                                                <Border Background="#DADADA" CornerRadius="4" Margin="2" Padding="3">
+                                                    <Button Content="{Binding Text}" FontSize="11" Background="Transparent" Foreground="#333" BorderThickness="0"
                                                             Command="{Binding DataContext.EditTagsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}">
-                                                    </Button>
+                                                            CommandParameter="{Binding}"/>
                                                 </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
+
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+
         </DockPanel>
-       
-        <WrapPanel Grid.Column="1" Background="CornflowerBlue" Orientation="Vertical">
-            <TextBlock Text="Trier" Foreground="White" FontSize="16" Margin="10" HorizontalAlignment="Stretch"/>
-            <RadioButton Content="Par nom" Margin="10" GroupName="sort" Checked="Sort"/>
-            <RadioButton Content="Par date" Margin="10" GroupName="sort" Checked="Sort"/>
-            <RadioButton Content="Par taille" Margin="10" GroupName="sort" Checked="Sort"/>
-            <RadioButton Content="Par type" Margin="10" GroupName="sort" Checked="Sort"/>
-            <ToggleButton x:Name="SortToggle"
-              Margin="10"
-              Width="120"
-              FontWeight="Bold"
-              Checked="callToggleOrder"
-              Unchecked="callToggleOrder"
-              IsChecked="True"
-              HorizontalAlignment="Stretch">
-                <ToggleButton.Style>
-                    <Style TargetType="ToggleButton">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Background" Value="LightGreen"/>
-                                <Setter Property="Foreground" Value="DarkGreen"/>
-                                <Setter Property="Content" Value="⭡ Croissant"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Background" Value="LightSalmon"/>
-                                <Setter Property="Foreground" Value="DarkRed"/>
-                                <Setter Property="Content" Value="⭣ Décroissant"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-            </ToggleButton>
-        </WrapPanel>
+
+        <Border Grid.Column="1"
+                Background="{DynamicResource PanelBackground}"
+                Padding="15"
+                CornerRadius="12"
+                Margin="5">
+
+            <StackPanel>
+
+                <TextBlock Text="🔽 Trier les photos"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,15"
+                           HorizontalAlignment="Center"/>
+
+                <ItemsControl>
+                    <ItemsControl.Resources>
+                        <Style TargetType="RadioButton">
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryForeground}"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Margin" Value="5,4"/>
+                            <Setter Property="Padding" Value="8,4"/>
+                            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="RadioButton">
+                                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="{StaticResource AccentBrush}"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonHover}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ItemsControl.Resources>
+
+                    <RadioButton Content="Par nom" GroupName="sort" Checked="Sort" Unchecked="Sort"/>
+                    <RadioButton Content="Par date" GroupName="sort" Checked="Sort" Unchecked="Sort"/>
+                    <RadioButton Content="Par taille" GroupName="sort" Checked="Sort" Unchecked="Sort"/>
+                    <RadioButton Content="Par type" GroupName="sort" Checked="Sort" Unchecked="Sort"/>
+
+                </ItemsControl>
+
+                <ToggleButton x:Name="SortToggle"
+                              Margin="10,20,10,0"
+                              Height="35"
+                              HorizontalAlignment="Stretch"
+                              FontWeight="Bold"
+                              Checked="callToggleOrder"
+                              Unchecked="callToggleOrder"
+                              IsChecked="True"
+                              Cursor="Hand">
+
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryForeground}"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#3EB489"/>
+                                                <Setter Property="Content" Value="⭡ Croissant"/>
+                                            </Trigger>
+
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter TargetName="border" Property="Background" Value="#E85A4F"/>
+                                                <Setter Property="Content" Value="⭣ Décroissant"/>
+                                            </Trigger>
+
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Opacity" Value="0.85"/>
+                                            </Trigger>
+
+                                        </ControlTemplate.Triggers>
+
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+
+                </ToggleButton>
+
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Window>
