@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,14 @@ namespace projet_wpf.Models
 {
     public class TagItem : INotifyPropertyChanged
     {
+        [Key]
+        public int Id { get; set; }
+
+        public int PhotoModelId { get; set; }
+        public PhotoModel Photo { get; set; }
+
+
+
         private string _text;
         public string Text
         {

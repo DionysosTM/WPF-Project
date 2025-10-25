@@ -1,4 +1,7 @@
-﻿using System.Configuration;
+﻿using projet_wpf.DataAccess;
+using projet_wpf.Models;
+using projet_wpf.ViewModels;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
@@ -13,11 +16,31 @@ namespace projet_wpf
         {
             base.OnStartup(e);
 
-            var mainWindow = new Views.MainWindow();
-            var viewModel = new ViewModels.MainViewModel();
+            using (var db = new AppDbContext())
+            {
+                db.Database.EnsureCreated();
 
-            mainWindow.DataContext = viewModel;
-            mainWindow.Show();
+                var photos = db.Photos
+                               .Where(p => !p.IsDeleted)
+                               .ToList();
+
+                foreach (var photo in photos)
+                {
+                    var tags = db.Tags.Where(t => t.PhotoModelId == photo.Id).ToList();
+                    photo.Tags = new System.Collections.ObjectModel.ObservableCollection<TagItem>(tags);
+
+                    photo.ReloadImages();
+                }
+
+                var viewModel = new MainViewModel(photos);
+
+                var mainWindow = new Views.MainWindow
+                {
+                    DataContext = viewModel
+                };
+
+                mainWindow.Show();
+            }
         }
     }
 

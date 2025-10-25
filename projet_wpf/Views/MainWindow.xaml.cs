@@ -1,4 +1,5 @@
-﻿using projet_wpf.Models;
+﻿using projet_wpf.DataAccess;
+using projet_wpf.Models;
 using projet_wpf.ViewModels;
 using System.Text;
 using System.Windows;
@@ -21,7 +22,6 @@ namespace projet_wpf.Views
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
         }
 
         private void Sort(object sender, RoutedEventArgs e)

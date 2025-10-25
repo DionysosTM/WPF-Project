@@ -1,30 +1,44 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using projet_wpf.DataAccess;
 
 namespace projet_wpf.Models
 {
     public class PhotoModel : INotifyPropertyChanged
     {
+        [Key]
+        public int Id { get; set; }
+        public bool IsDeleted { get; set; } = false;
+
+
+
         public string FilePath { get; set; }
         public string FileName { get; set; }
         public string FileType { get; set; }
         public long FileSize { get; set; }
         public DateTime DateAdded { get; set; }
+        [NotMapped]
         public double CurrentAngle { get; private set; } = 0;
-        
+
         // Image originale
+        [NotMapped]
         private BitmapImage _originalBitmap;
         // Miniature originale
+        [NotMapped]
         private BitmapSource _originalThumbnail;
 
         // Image diaporama
+        [NotMapped]
         private ImageSource _fullImage;
+        [NotMapped]
         public ImageSource FullImage
         {
             get => _fullImage;
@@ -37,7 +51,9 @@ namespace projet_wpf.Models
         }
 
         // Image miniature
+        [NotMapped]
         private ImageSource _thumbnail;
+        [NotMapped]
         public ImageSource Thumbnail
         {
             get => _thumbnail;
@@ -49,7 +65,9 @@ namespace projet_wpf.Models
             }
         }
 
+        [NotMapped]
         private Color _dominantColor = Colors.Transparent;
+        [NotMapped]
         public Color DominantColor
         {
             get => _dominantColor;
@@ -64,6 +82,7 @@ namespace projet_wpf.Models
         public string DominantColorHex => $"#{DominantColor.R:X2}{DominantColor.G:X2}{DominantColor.B:X2}";
 
         private ObservableCollection<TagItem> _tags = new ObservableCollection<TagItem>();
+        [NotMapped]
         public string TagsString => string.Join(", ", Tags.Select(t => t.Text));
         public ObservableCollection<TagItem> Tags
         {
@@ -138,11 +157,48 @@ namespace projet_wpf.Models
         public void AddTag(string tag)
         {
             tag = tag.Trim().ToLower();
-            if (!string.IsNullOrWhiteSpace(tag) && !Tags.Any(t => t.Text == tag))
+            if (string.IsNullOrWhiteSpace(tag) || Tags.Any(t => t.Text == tag))
+                return;
+
+            var newTag = new TagItem { Text = tag, PhotoModelId = this.Id };
+            Tags.Add(newTag);
+
+            using (var db = new AppDbContext())
             {
-                Tags.Add(new TagItem { Text = tag });
-                OnPropertyChanged(nameof(TagsString));
+                db.Tags.Add(newTag);
+                db.SaveChanges();
             }
+
+            OnPropertyChanged(nameof(TagsString));
+        }
+
+        public void RemoveTag(TagItem tag)
+        {
+            if (!Tags.Contains(tag)) return;
+            Tags.Remove(tag);
+
+            using (var db = new AppDbContext())
+            {
+                db.Tags.Remove(tag);
+                db.SaveChanges();
+            }
+
+            OnPropertyChanged(nameof(TagsString));
+        }
+
+        public void UpdateTag(TagItem tag, string newText)
+        {
+            if (!Tags.Contains(tag) || string.IsNullOrWhiteSpace(newText)) return;
+
+            tag.Text = newText.Trim().ToLower();
+
+            using (var db = new AppDbContext())
+            {
+                db.Tags.Update(tag);
+                db.SaveChanges();
+            }
+
+            OnPropertyChanged(nameof(TagsString));
         }
 
         private static Color GetDominantColorFromBitmapSource(BitmapSource bitmap, int quantizeBitsPerChannel = 5)
@@ -192,6 +248,23 @@ namespace projet_wpf.Models
             byte b8 = (byte)((bb << shift) | (bb >> (quantizeBitsPerChannel - shift)));
 
             return Color.FromRgb(r8, g8, b8);
+        }
+
+        public void ReloadImages()
+        {
+            var img = new BitmapImage(new Uri(FilePath));
+            img.Freeze();
+            FullImage = img;
+
+            var thumb = new BitmapImage();
+            thumb.BeginInit();
+            thumb.UriSource = new Uri(FilePath);
+            thumb.DecodePixelWidth = 150;
+            thumb.CacheOption = BitmapCacheOption.OnLoad;
+            thumb.EndInit();
+            thumb.Freeze();
+
+            Thumbnail = thumb;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

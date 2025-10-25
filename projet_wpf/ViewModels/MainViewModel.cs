@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
+using projet_wpf.DataAccess;
 using projet_wpf.Helpers;
 using projet_wpf.Models;
 using System;
@@ -100,12 +102,12 @@ namespace projet_wpf.ViewModels
             }
         }
 
+        private readonly AppDbContext _db;
 
-
-        public MainViewModel()
+        public MainViewModel(List<PhotoModel> loadedPhotos)
         {
-            Photos = new ObservableCollection<PhotoModel>();
-            VisiblePhotos= new ObservableCollection<PhotoModel>();
+            Photos = new ObservableCollection<PhotoModel>(loadedPhotos);
+            VisiblePhotos = new ObservableCollection<PhotoModel>(loadedPhotos);
             ImportFilesCommand = new RelayCommand(ImportFiles);
             ImportFolderCommand = new RelayCommand(ImportFolder);
             orderType  = "Croissant";
@@ -134,12 +136,33 @@ namespace projet_wpf.ViewModels
             ColorCategories.Add("Violet");
             ColorCategories.Add("Magenta");
             SelectedColorCategory = "Tous";
+
+            _db = new AppDbContext();
+            //LoadPhotosFromDatabase();
+        }
+
+        private void LoadPhotosFromDatabase()
+        {
+            var photos = _db.Photos
+                .Where(p => !p.IsDeleted)
+                .Include(p => p.Tags)
+                .ToList();
+
+            foreach (var photo in photos)
+            {
+                photo.ReloadImages();
+                Photos.Add(photo);
+                VisiblePhotos.Add(photo);
+            }
         }
 
         #region add photo
         private void AddPhoto(string file)
         {
             PhotoModel photo = new PhotoModel(file);
+
+            _db.Photos.Add(photo);
+            _db.SaveChanges();
             Photos.Add(photo);
             if (photo.FileType == _selectedFileType || _selectedFileType == "Tous")
             {
@@ -342,11 +365,12 @@ namespace projet_wpf.ViewModels
         {
             if (parameter is PhotoModel photo)
             {
-                if (Photos.Contains(photo))
-                    Photos.Remove(photo);
+                photo.IsDeleted = true;
+                _db.Photos.Update(photo);
+                _db.SaveChanges();
 
-                if (VisiblePhotos.Contains(photo))
-                    VisiblePhotos.Remove(photo);
+                Photos.Remove(photo);
+                VisiblePhotos.Remove(photo);
 
                 OnPropertyChanged(nameof(VisiblePhotos));
             }

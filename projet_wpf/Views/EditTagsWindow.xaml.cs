@@ -22,12 +22,14 @@ namespace projet_wpf.Views
     /// </summary>
     public partial class EditTagsWindow : Window
     {
-        public ObservableCollection<TagItem> Tags { get; set; }
+        private PhotoModel _photo;
+
+        public ObservableCollection<TagItem> Tags => _photo.Tags;
 
         public EditTagsWindow(PhotoModel photo)
         {
             InitializeComponent();
-            Tags = photo.Tags;
+            _photo = photo;
             DataContext = this;
         }
 
@@ -37,7 +39,7 @@ namespace projet_wpf.Views
                 "Entrez un nouveau tag :", "Ajouter un tag", "");
             if (!string.IsNullOrWhiteSpace(input))
             {
-                Tags.Add(new TagItem { Text = input.Trim().ToLower() });
+                _photo.AddTag(input);
             }
         }
 
@@ -48,8 +50,7 @@ namespace projet_wpf.Views
                 var input = Interaction.InputBox("Modifiez le tag :", "Modifier un tag", tag.Text);
                 if (!string.IsNullOrWhiteSpace(input))
                 {
-                    tag.Text = input.Trim().ToLower();
-                    tag.NotifyPropertyChanged(nameof(tag.Text));
+                    _photo.UpdateTag(tag, input);
                 }
             }
         }
@@ -58,7 +59,7 @@ namespace projet_wpf.Views
         {
             if (sender is Button btn && btn.Tag is TagItem tag)
             {
-                Tags.Remove(tag);
+                _photo.RemoveTag(tag);
             }
         }
 

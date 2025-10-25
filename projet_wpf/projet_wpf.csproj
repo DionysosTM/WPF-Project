@@ -21,6 +21,10 @@
     <Page Remove="Services\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="DataAccess\AppDbContext.cs" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<Compile Update="Views\MainWindow.xaml.cs">
 			<DependentUpon>MainWindow.xaml</DependentUpon>
@@ -29,6 +33,15 @@
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.10" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
 	</ItemGroup>
 
 
